@@ -1,4 +1,4 @@
- import api from "./API.js";
+ import api from "./API.js"
 
 const state = {
     challengeId: null,
