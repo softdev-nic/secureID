@@ -1,0 +1,23 @@
+{
+  "name": "secureid_frontend",
+  "version": "1.0.0",
+  "description": "Plain HTML/CSS/JavaScript frontend based on the supplied SecureID login screenshots and the IAM implementation guidelines.",
+  "homepage": "https://github.com/softdev-nic/secureID#readme",
+  "bugs": {
+    "url": "https://github.com/softdev-nic/secureID/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/softdev-nic/secureID.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "API.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^1.19.0"
+  }
+}
