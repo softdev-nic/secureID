@@ -1,10 +1,11 @@
-import api from "./API.js";
+ import api from "./API.js";
 
 const state = {
     challengeId: null,
     method: "email",
     destination: "",
-    expiresAt: null
+    expiresAt: null,
+    resetToken: null
 };
 
 const screens = [...document.querySelectorAll(".screen")];
@@ -21,18 +22,21 @@ const clearErrors = () => {
         e.textContent = "";
         e.classList.add("hidden");
     });
+
     document.getElementById("otp-boxes")?.classList.remove("error-state");
 };
 
 const showError = (id, msg) => {
     const e = document.getElementById(id);
     if (!e) return;
+
     e.textContent = msg;
     e.classList.remove("hidden");
 };
 
 const loading = (btn, value, text) => {
     if (!btn) return;
+
     btn.disabled = value;
 
     if (value) {
@@ -215,6 +219,7 @@ async function verifyOtp() {
     }
 
     const btn = document.getElementById("otp-submit");
+
     loading(btn, true, "Verifying...");
 
     try {
@@ -239,9 +244,7 @@ async function verifyOtp() {
             showScreen("success-screen");
         }
     } catch (err) {
-        document
-            .getElementById("otp-boxes")
-            ?.classList.add("error-state");
+        document.getElementById("otp-boxes")?.classList.add("error-state");
 
         showError(
             "otp-error",
@@ -253,6 +256,82 @@ async function verifyOtp() {
         loading(btn, false);
     }
 }
+
+document.getElementById("forgot-password")?.addEventListener("click", () => {
+    showScreen("forgot-password-screen");
+});
+
+document.getElementById("forgot-password-form")?.addEventListener("submit", async e => {
+    e.preventDefault();
+    clearErrors();
+
+    const btn = e.submitter;
+    const email = document.getElementById("forgot-email").value.trim();
+
+    if (!email) {
+        showError("forgot-error", "Enter your email.");
+        return;
+    }
+
+    loading(btn, true, "Sending...");
+
+    try {
+        const { data } = await api.post("/password/forgot", {
+            email
+        });
+
+        state.resetToken = data.resetToken;
+
+        showScreen("reset-password-screen");
+    } catch (err) {
+        showError(
+            "forgot-error",
+            err.message || "Unable to generate reset link."
+        );
+    } finally {
+        loading(btn, false);
+    }
+});
+
+document.getElementById("reset-password-form")?.addEventListener("submit", async e => {
+    e.preventDefault();
+    clearErrors();
+
+    const btn = e.submitter;
+    const password = document.getElementById("new-password").value;
+    const confirmPassword =
+        document.getElementById("confirm-password").value;
+
+    if (!password || !confirmPassword) {
+        showError("reset-error", "Please enter both passwords.");
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        showError("reset-error", "Passwords do not match.");
+        return;
+    }
+
+    loading(btn, true, "Resetting...");
+
+    try {
+        await api.post(
+            `/password/reset/${state.resetToken}`,
+            { password }
+        );
+
+        state.resetToken = null;
+
+        showScreen("login-screen");
+    } catch (err) {
+        showError(
+            "reset-error",
+            err.message || "Password reset failed."
+        );
+    } finally {
+        loading(btn, false);
+    }
+});
 
 document.getElementById("create-account")?.addEventListener("click", () => {
     showScreen("register-screen");
@@ -275,8 +354,4 @@ document.getElementById("toggle-password")?.addEventListener("click", () => {
 
 document.getElementById("google-login")?.addEventListener("click", () => {
     alert("Google Sign-In is not connected yet.");
-});
-
-document.getElementById("forgot-password")?.addEventListener("click", () => {
-    alert("Forgot-password flow is not connected yet.");
 });

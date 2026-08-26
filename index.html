@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SecureID</title>
   <link rel="stylesheet" href="./styles.css">
 </head>
+
 <body>
+
   <main class="app-shell">
+
     <section class="brand-panel">
       <div class="brand-lock">♙</div>
       <h1>SecureID</h1>
@@ -16,142 +20,469 @@
     </section>
 
     <section class="content-panel">
-      <!-- LOGIN -->
+
       <section id="login-screen" class="screen active">
+
         <div class="icon-circle lock-icon">▣</div>
+
         <h2>Welcome back!</h2>
         <p class="subtitle">Login to your account</p>
 
         <form id="login-form" novalidate>
+
           <label class="field">
             <span class="field-icon">♙</span>
-            <input id="identity" name="identity" autocomplete="username"
-                   placeholder="Email or Username" required>
+            <input
+              id="identity"
+              name="identity"
+              autocomplete="username"
+              placeholder="Email or Username"
+              required
+            >
           </label>
 
           <label class="field">
             <span class="field-icon">☰</span>
-            <input id="password" name="password" type="password"
-                   autocomplete="current-password" placeholder="Password" required>
-            <button type="button" class="field-action" id="toggle-password" aria-label="Show password">◉</button>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              placeholder="Password"
+              required
+            >
+            <button
+              type="button"
+              class="field-action"
+              id="toggle-password"
+              aria-label="Show password"
+            >◉</button>
           </label>
 
           <div class="login-options">
-            <label><input type="checkbox" id="remember-me"> <span>Remember me</span></label>
-            <button type="button" class="link-btn" id="forgot-password">Forgot password?</button>
+            <label>
+              <input type="checkbox" id="remember-me">
+              <span>Remember me</span>
+            </label>
+
+            <button
+              type="button"
+              class="link-btn"
+              id="forgot-password"
+            >Forgot password?</button>
           </div>
 
           <p id="login-error" class="error hidden"></p>
 
-          <button class="primary-btn" type="submit">Login</button>
+          <button class="primary-btn" type="submit">
+            Login
+          </button>
+
         </form>
 
-        <div class="divider"><span>or</span></div>
+        <div class="divider">
+          <span>or</span>
+        </div>
 
         <button class="google-btn" id="google-login">
-          <span class="google-g">G</span> Continue with Google
+          <span class="google-g">G</span>
+          Continue with Google
         </button>
 
-        <p class="bottom-link">New here? <button id="create-account" class="link-btn">Create an account</button></p>
+        <p class="bottom-link">
+          New here?
+          <button id="create-account" class="link-btn">
+            Create an account
+          </button>
+        </p>
+
       </section>
 
-      <!-- CHOOSE METHOD -->
+
       <section id="method-screen" class="screen">
+
         <button class="back-btn" data-back="login-screen">←</button>
+
         <div class="icon-circle lock-icon">▣</div>
+
         <h2>Verify your identity</h2>
         <p class="subtitle">Choose a method to continue</p>
 
         <div class="method-list">
+
           <label class="method-card selected">
-            <input type="radio" name="method" value="email" checked>
+            <input
+              type="radio"
+              name="method"
+              value="email"
+              checked
+            >
             <span class="method-icon email">✉</span>
-            <span class="method-copy"><b>Email OTP</b><small>Receive a code on your email</small></span>
+            <span class="method-copy">
+              <b>Email OTP</b>
+              <small>Receive a code on your email</small>
+            </span>
             <span class="radio-dot"></span>
           </label>
 
           <label class="method-card">
-            <input type="radio" name="method" value="sms">
+            <input
+              type="radio"
+              name="method"
+              value="sms"
+            >
             <span class="method-icon sms">▣</span>
-            <span class="method-copy"><b>SMS OTP</b><small>Receive a code on your mobile</small></span>
+            <span class="method-copy">
+              <b>SMS OTP</b>
+              <small>Receive a code on your mobile</small>
+            </span>
             <span class="radio-dot"></span>
           </label>
 
           <label class="method-card">
-            <input type="radio" name="method" value="authenticator">
+            <input
+              type="radio"
+              name="method"
+              value="authenticator"
+            >
             <span class="method-icon auth">▣</span>
-            <span class="method-copy"><b>Authenticator App</b><small>Use code from your authenticator app</small></span>
+            <span class="method-copy">
+              <b>Authenticator App</b>
+              <small>Use code from your authenticator app</small>
+            </span>
             <span class="radio-dot"></span>
           </label>
+
         </div>
 
         <p id="method-error" class="error hidden"></p>
-        <button class="primary-btn" id="continue-method">Continue</button>
+
+        <button class="primary-btn" id="continue-method">
+          Continue
+        </button>
+
       </section>
 
-      <!-- OTP -->
+
       <section id="otp-screen" class="screen">
+
         <button class="back-btn" data-back="method-screen">←</button>
+
         <div class="icon-circle mail-icon">✉</div>
+
         <h2 id="otp-title">Email Verification</h2>
-        <p class="subtitle">Enter the 6-digit code sent to<br><b id="otp-destination">your email</b></p>
+
+        <p class="subtitle">
+          Enter the 6-digit code sent to<br>
+          <b id="otp-destination">your email</b>
+        </p>
 
         <div class="otp-boxes" id="otp-boxes">
-          <input maxlength="1" inputmode="numeric" autocomplete="one-time-code">
+
+          <input
+            maxlength="1"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+          >
+
           <input maxlength="1" inputmode="numeric">
           <input maxlength="1" inputmode="numeric">
           <input maxlength="1" inputmode="numeric">
           <input maxlength="1" inputmode="numeric">
           <input maxlength="1" inputmode="numeric">
-          
+
         </div>
-        <button type="button" id="otp-submit">Verify</button>
+
+        <button
+          type="button"
+          class="primary-btn"
+          id="otp-submit"
+        >
+          Verify
+        </button>
 
         <p id="otp-error" class="error hidden"></p>
 
-        <p class="timer-text" id="otp-timer">Code expires in <b>02:45</b></p>
-        <button class="link-btn resend-btn" id="resend-otp" disabled>Resend code <span id="resend-timer">(00:25)</span></button>
-        <button class="link-btn help-link" id="didnt-receive">Didn't receive the code?</button>
+        <p class="timer-text" id="otp-timer">
+          Code expires in <b>05:00</b>
+        </p>
 
-        <button class="primary-btn hidden" id="otp-submit">Verify</button>
+        <button
+          class="link-btn resend-btn"
+          id="resend-otp"
+          disabled
+        >
+          Resend code
+          <span id="resend-timer">(00:25)</span>
+        </button>
+
+        <button
+          class="link-btn help-link"
+          id="didnt-receive"
+        >
+          Didn't receive the code?
+        </button>
+
       </section>
 
-      <!-- EXPIRED -->
+
       <section id="expired-screen" class="screen">
+
         <button class="back-btn" data-back="method-screen">←</button>
+
         <div class="icon-circle mail-icon">✉</div>
+
         <h2>Email Verification</h2>
-        <p class="subtitle">Enter the 6-digit code sent to<br><b id="expired-destination">your email</b></p>
+
+        <p class="subtitle">
+          Enter the 6-digit code sent to<br>
+          <b id="expired-destination">your email</b>
+        </p>
 
         <div class="otp-boxes disabled">
-          <input disabled><input disabled><input disabled><input disabled><input disabled><input disabled>
+
+          <input disabled>
+          <input disabled>
+          <input disabled>
+          <input disabled>
+          <input disabled>
+          <input disabled>
+
         </div>
 
-        <p class="expired-message">Code expired.</p>
-        <button class="link-btn" id="expired-resend">Resend code</button>
-        <p class="timer-text">You can request a new code in <b id="expired-resend-countdown">00:28</b></p>
-        <button class="link-btn help-link">Didn't receive the code?</button>
+        <p class="expired-message">
+          Code expired.
+        </p>
+
+        <button class="link-btn" id="expired-resend">
+          Resend code
+        </button>
+
+        <p class="timer-text">
+          You can request a new code in
+          <b id="expired-resend-countdown">00:28</b>
+        </p>
+
+        <button class="link-btn help-link">
+          Didn't receive the code?
+        </button>
+
       </section>
 
-      <!-- REGISTRATION PLACEHOLDER -->
+
       <section id="register-screen" class="screen">
+
         <button class="back-btn" data-back="login-screen">←</button>
+
         <div class="icon-circle lock-icon">▣</div>
+
         <h2>Create your account</h2>
         <p class="subtitle">Register to continue</p>
+
         <form id="register-form">
-          <label class="field"><span class="field-icon">♙</span><input id="reg-username" placeholder="Username" required></label>
-          <label class="field"><span class="field-icon">✉</span><input id="reg-email" type="email" placeholder="Email" required></label>
-          <label class="field"><span class="field-icon">▣</span><input id="reg-phone" type="tel" placeholder="Mobile number" required></label>
-          <label class="field"><span class="field-icon">☰</span><input id="reg-password" type="password" placeholder="Password" required></label>
-          <label class="terms"><input type="checkbox" id="terms" required> I agree to the Terms and Conditions</label>
+
+          <label class="field">
+            <span class="field-icon">♙</span>
+            <input
+              id="reg-username"
+              name="username"
+              autocomplete="username"
+              placeholder="Username"
+              required
+            >
+          </label>
+
+          <label class="field">
+            <span class="field-icon">✉</span>
+            <input
+              id="reg-email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              placeholder="Email"
+              required
+            >
+          </label>
+
+          <label class="field">
+            <span class="field-icon">▣</span>
+            <input
+              id="reg-phone"
+              name="phoneNumber"
+              type="tel"
+              autocomplete="tel"
+              placeholder="Mobile number"
+              required
+            >
+          </label>
+
+          <label class="field">
+            <span class="field-icon">☰</span>
+            <input
+              id="reg-password"
+              name="password"
+              type="password"
+              autocomplete="new-password"
+              placeholder="Password"
+              required
+            >
+          </label>
+
+          <label class="terms">
+            <input
+              type="checkbox"
+              id="terms"
+              name="termsChecked"
+              required
+            >
+            I agree to the Terms and Conditions
+          </label>
+
           <p id="register-error" class="error hidden"></p>
-          <button class="primary-btn" type="submit">Create account</button>
+
+          <button class="primary-btn" type="submit">
+            Create account
+          </button>
+
         </form>
+
       </section>
+
+
+      <section id="forgot-password-screen" class="screen">
+
+        <button class="back-btn" data-back="login-screen">←</button>
+
+        <div class="icon-circle lock-icon">▣</div>
+
+        <h2>Forgot password?</h2>
+        <p class="subtitle">
+          Enter your email to reset your password
+        </p>
+
+        <form id="forgot-password-form">
+
+          <label class="field">
+            <span class="field-icon">✉</span>
+            <input
+              id="forgot-email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              placeholder="Email"
+              required
+            >
+          </label>
+
+          <p id="forgot-error" class="error hidden"></p>
+
+          <button class="primary-btn" type="submit">
+            Send reset link
+          </button>
+
+        </form>
+
+      </section>
+
+
+      <section id="reset-sent-screen" class="screen">
+
+        <div class="icon-circle mail-icon">✉</div>
+
+        <h2>Reset link generated</h2>
+
+        <p class="subtitle">
+          Your password reset request was generated successfully.
+        </p>
+
+        <button
+          class="primary-btn"
+          type="button"
+          data-back="reset-password-screen"
+        >
+          Continue
+        </button>
+
+      </section>
+
+
+      <section id="reset-password-screen" class="screen">
+
+        <button class="back-btn" data-back="login-screen">←</button>
+
+        <div class="icon-circle lock-icon">▣</div>
+
+        <h2>Reset password</h2>
+
+        <p class="subtitle">
+          Create a new password for your account
+        </p>
+
+        <form id="reset-password-form">
+
+          <label class="field">
+            <span class="field-icon">☰</span>
+            <input
+              id="new-password"
+              name="password"
+              type="password"
+              autocomplete="new-password"
+              placeholder="New password"
+              required
+            >
+          </label>
+
+          <label class="field">
+            <span class="field-icon">☰</span>
+            <input
+              id="confirm-password"
+              name="confirmPassword"
+              type="password"
+              autocomplete="new-password"
+              placeholder="Confirm password"
+              required
+            >
+          </label>
+
+          <p id="reset-error" class="error hidden"></p>
+
+          <button class="primary-btn" type="submit">
+            Reset password
+          </button>
+
+        </form>
+
+      </section>
+
+
+      <section id="success-screen" class="screen">
+
+        <div class="icon-circle lock-icon">✓</div>
+
+        <h2>User verified</h2>
+
+        <p class="subtitle">
+          Your account has been successfully verified.
+        </p>
+
+        <button
+          class="primary-btn"
+          type="button"
+          data-back="login-screen"
+        >
+          Continue to login
+        </button>
+
+      </section>
+
     </section>
+
   </main>
+
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
   <script type="module" src="./app.js"></script>
+
 </body>
+
 </html>
