@@ -1,11 +1,10 @@
- import api from "./API.js";
+import api from "./API.js";
 
 const state = {
     challengeId: null,
     method: "email",
     destination: "",
-    expiresAt: null,
-    mode: "registration"
+    expiresAt: null
 };
 
 const screens = [...document.querySelectorAll(".screen")];
@@ -35,6 +34,7 @@ const showError = (id, msg) => {
 const loading = (btn, value, text) => {
     if (!btn) return;
     btn.disabled = value;
+
     if (value) {
         btn.dataset.text = btn.textContent;
         btn.textContent = text;
@@ -43,7 +43,43 @@ const loading = (btn, value, text) => {
     }
 };
 
-document.getElementById("register-form").addEventListener("submit", async e => {
+document.getElementById("login-form")?.addEventListener("submit", async e => {
+    e.preventDefault();
+    clearErrors();
+
+    const btn = e.submitter;
+    const email = document.getElementById("identity").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (!email || !password) {
+        showError("login-error", "Please enter your email and password.");
+        return;
+    }
+
+    loading(btn, true, "Logging in...");
+
+    try {
+        const { data } = await api.post("/login", {
+            email,
+            password
+        });
+
+        localStorage.setItem("auth-token", data.token);
+
+        if (data.user?.isVerified === false) {
+            showError("login-error", "Account is not verified.");
+            return;
+        }
+
+        window.location.href = data.redirect || "./dashboard.html";
+    } catch (err) {
+        showError("login-error", err.message || "Login failed.");
+    } finally {
+        loading(btn, false);
+    }
+});
+
+document.getElementById("register-form")?.addEventListener("submit", async e => {
     e.preventDefault();
     clearErrors();
 
@@ -60,10 +96,10 @@ document.getElementById("register-form").addEventListener("submit", async e => {
             termsChecked: document.getElementById("terms").checked
         });
 
-        state.mode = "registration";
-        state.method = "email";
         state.challengeId = data.challengeId;
-        state.destination = document.getElementById("reg-email").value.trim();
+        state.method = "email";
+        state.destination =
+            document.getElementById("reg-email").value.trim();
 
         openOtpScreen();
     } catch (err) {
@@ -76,6 +112,7 @@ document.getElementById("register-form").addEventListener("submit", async e => {
 otpInputs.forEach((input, i) => {
     input.addEventListener("input", e => {
         e.target.value = e.target.value.replace(/\D/g, "").slice(-1);
+
         if (e.target.value && i < otpInputs.length - 1)
             otpInputs[i + 1].focus();
     });
@@ -89,6 +126,9 @@ otpInputs.forEach((input, i) => {
 
         if (e.key === "ArrowRight" && i < otpInputs.length - 1)
             otpInputs[i + 1].focus();
+
+        if (e.key === "Enter")
+            verifyOtp();
     });
 
     input.addEventListener("paste", e => {
@@ -102,7 +142,8 @@ otpInputs.forEach((input, i) => {
         e.preventDefault();
 
         [...text].forEach((digit, n) => {
-            if (otpInputs[n]) otpInputs[n].value = digit;
+            if (otpInputs[n])
+                otpInputs[n].value = digit;
         });
 
         otpInputs[Math.min(text.length, 6) - 1]?.focus();
@@ -132,8 +173,6 @@ function openOtpScreen() {
 
     showScreen("otp-screen");
     startTimer();
-
-    setTimeout(() => otpInputs[0]?.focus(), 50);
 }
 
 function startTimer() {
@@ -158,11 +197,12 @@ function startTimer() {
 }
 
 const formatTime = ms => {
-    const s = Math.ceil(ms / 1000);
-    return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+    const seconds = Math.ceil(ms / 1000);
+
+    return `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
 };
 
-document.getElementById("otp-submit").addEventListener("click", verifyOtp);
+document.getElementById("otp-submit")?.addEventListener("click", verifyOtp);
 
 async function verifyOtp() {
     clearErrors();
@@ -186,6 +226,10 @@ async function verifyOtp() {
         if (data.challengeId) {
             state.challengeId = data.challengeId;
             state.method = "sms";
+            state.destination =
+                document.getElementById("reg-phone")?.value.trim() ||
+                state.destination;
+
             openOtpScreen();
             return;
         }
@@ -195,8 +239,15 @@ async function verifyOtp() {
             showScreen("success-screen");
         }
     } catch (err) {
-        document.getElementById("otp-boxes").classList.add("error-state");
-        showError("otp-error", err.message || "Invalid OTP. Try again.");
+        document
+            .getElementById("otp-boxes")
+            ?.classList.add("error-state");
+
+        showError(
+            "otp-error",
+            err.message || "Invalid OTP. Try again."
+        );
+
         clearOtp();
     } finally {
         loading(btn, false);
@@ -208,17 +259,18 @@ document.getElementById("create-account")?.addEventListener("click", () => {
 });
 
 document.querySelectorAll("[data-back]").forEach(btn => {
-    btn.addEventListener("click", () => showScreen(btn.dataset.back));
+    btn.addEventListener("click", () => {
+        showScreen(btn.dataset.back);
+    });
 });
 
 document.getElementById("toggle-password")?.addEventListener("click", () => {
     const input = document.getElementById("password");
-    input.type = input.type === "password" ? "text" : "password";
-});
 
-document.getElementById("login-form")?.addEventListener("submit", e => {
-    e.preventDefault();
-    showError("login-error", "Login API is not connected yet.");
+    input.type =
+        input.type === "password"
+            ? "text"
+            : "password";
 });
 
 document.getElementById("google-login")?.addEventListener("click", () => {
